@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
         Idle,
         Running,
         Jumping,
+        Falling,
         Attacking
     }
 
@@ -19,12 +20,12 @@ public class PlayerMovement : MonoBehaviour
     }
 
     [Header("Movement values")]
-    public float movementSpeed;
-    public float jumpForce;
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float jumpForce;
 
     [Header("Raycast lenght and layermask")]
-    public float isGroundedRayLength;
-    public LayerMask platformLayerMask;
+    [SerializeField] private float isGroundedRayLength;
+    [SerializeField] private LayerMask platformLayerMask;
 
     [Header("Movement States")]
     public MovementStates movementStates;
@@ -62,7 +63,6 @@ public class PlayerMovement : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && isGrounded())
         {
-
             rigidBody2D.velocity = Vector2.up * jumpForce;
         }
     }
@@ -87,10 +87,10 @@ public class PlayerMovement : MonoBehaviour
         switch (facingDirection)
         {
             case FacingDirection.Right:
-                spriteRenderer.flipX = false;
+                transform.localScale = new Vector3(1, 1, 1);
                 break;
             case FacingDirection.Left:
-                spriteRenderer.flipX = true;
+                transform.localScale = new Vector3(-1, 1, 1);
                 break;
         }
     }
@@ -107,6 +107,12 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case MovementStates.Jumping:
                 animController.PlayJumpingAnim();
+                break;
+            case MovementStates.Falling:
+                animController.PlayFallingAnim();
+                break;
+            case MovementStates.Attacking:
+                animController.TiggerAttackAnim();
                 break;
             default:
                 break;

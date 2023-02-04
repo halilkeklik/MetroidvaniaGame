@@ -418,7 +418,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 594321905}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.201, y: -0.183, z: 0}
+  m_LocalPosition: {x: 0.637, y: -0.183, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1403,6 +1403,7 @@ GameObject:
   - component: {fileID: 1511095514}
   - component: {fileID: 1511095515}
   - component: {fileID: 1511095516}
+  - component: {fileID: 1511095517}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1470,7 +1471,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1511095508}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.024, y: -1.07, z: 0}
+  m_LocalPosition: {x: 0.04, y: -1.07, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1557,11 +1558,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8a675c83b7676a4688ec6a079aa52b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
-  jumpforce: 8.1
-  jumpableGround:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!114 &1511095515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1594,3 +1590,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9d406d01c0e90c847b7fa0a7857c6e32, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1511095517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511095508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 850c6d1114d726441ac6bd55fdf5ed83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 6
+  jumpForce: 8.1
+  isGroundedRayLength: 1
+  platformLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  movementStates: 0
+  facingDirection: 0

@@ -14,7 +14,6 @@ public class PlayerCombat : MonoBehaviour
     {
         Collider2D[] enemiesToDamage = Physics2D.OverlapBoxAll(attackPos.position,
             new Vector2(attackRangeX, attackRangeY),0,whatIsEnemy);
-        
         if(enemiesToDamage==null)
             return;
         

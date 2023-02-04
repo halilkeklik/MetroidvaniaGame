@@ -6,73 +6,67 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private PlayerAnimationController animationController;
+    private PlayerMovement playerMovement;
     private PlayerCombat combat;
-    private BoxCollider2D coll;
-    private SpriteRenderer sprite;
-    [SerializeField] private float speed;
-    [SerializeField] private float jumpforce;
-    [SerializeField] private LayerMask jumpableGround;
-    private float dirX;
-    
+
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        animationController = GetComponent<PlayerAnimationController>();
-        sprite = GetComponent<SpriteRenderer>();
-        coll = GetComponent<BoxCollider2D>();
         combat = GetComponent<PlayerCombat>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        dirX = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(dirX * speed, rb.velocity.y);
-        
-        if (Input.GetButtonDown("Jump") && isGrounded())
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpforce);
-        }
-
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonDown("Fire1") && playerMovement.movementStates != PlayerMovement.MovementStates.Jumping)
         {
             StartCoroutine(AttackOrder());
         }
-        AnimationState();
+        SetPlayerState();
     }
 
-    private  void AnimationState()
+    private  void SetPlayerState()
     {
-        if (dirX > 0f)
+        if (playerMovement.isGrounded())
         {
-            animationController.PlayRunningAnim();
-            sprite.flipX = false;
+            if(combat.isAttacking)
+                return;
+            switch (rb.velocity.x)
+            {
+                case 0:
+                    playerMovement.movementStates = PlayerMovement.MovementStates.Idle;
+                    break;
+                case > .1f:
+                    playerMovement.facingDirection = PlayerMovement.FacingDirection.Right;
+                    playerMovement.movementStates = PlayerMovement.MovementStates.Running;
+                    break;
+                case < .1f:
+                    playerMovement.facingDirection = PlayerMovement.FacingDirection.Left;
+                    playerMovement.movementStates = PlayerMovement.MovementStates.Running;
+                    break;
+            }
         }
-        else if (dirX < 0f)
+        else switch (rb.velocity)
         {
-            animationController.PlayRunningAnim();
-            sprite.flipX = true;
+            case { y: > .1f, x: > .1f }:
+                playerMovement.facingDirection = PlayerMovement.FacingDirection.Right;
+                playerMovement.movementStates = PlayerMovement.MovementStates.Jumping;
+                break;
+            case { y: > .1f, x: < .1f }:
+                playerMovement.facingDirection = PlayerMovement.FacingDirection.Left;
+                playerMovement.movementStates = PlayerMovement.MovementStates.Jumping;
+                break;
+            case { y: < .1f, x: > .1f }:
+                playerMovement.facingDirection = PlayerMovement.FacingDirection.Right;
+                playerMovement.movementStates = PlayerMovement.MovementStates.Falling;
+                break;
+            case { y: < .1f, x: < .1f }:
+                playerMovement.facingDirection = PlayerMovement.FacingDirection.Left;
+                playerMovement.movementStates = PlayerMovement.MovementStates.Falling;
+                break;
         }
-        else
-        {
-            animationController.PlayIdleAnim();
-        }
-
-        if (rb.velocity.y > .1f)
-        {
-            animationController.PlayJumpingAnim();
-        }
-        else if(rb.velocity.y < -.1f)
-        {
-            animationController.PlayFallingAnim();
-        }
-    }
-
-    private bool isGrounded()
-    {
-        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
 
     private IEnumerator AttackOrder()
@@ -81,9 +75,10 @@ public class PlayerController : MonoBehaviour
             yield break;
 
         combat.isAttacking = true;
-        animationController.TiggerAttackAnim();
+        playerMovement.movementStates = PlayerMovement.MovementStates.Attacking;
+        
 
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.01f);
         
         combat.Attack();
 
