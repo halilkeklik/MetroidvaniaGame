@@ -6,7 +6,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
-    private Animator anim;
+    private PlayerAnimationController animationController;
+    private PlayerCombat combat;
     private BoxCollider2D coll;
     private SpriteRenderer sprite;
     [SerializeField] private float speed;
@@ -14,24 +15,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask jumpableGround;
     private float dirX;
     
-    private enum MovementState
-    {
-        idle,
-        running,
-        jumping,
-        falling,
-    };
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        animationController = GetComponent<PlayerAnimationController>();
         sprite = GetComponent<SpriteRenderer>();
         coll = GetComponent<BoxCollider2D>();
+        combat = GetComponent<PlayerCombat>();
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         dirX = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(dirX * speed, rb.velocity.y);
@@ -40,41 +35,58 @@ public class PlayerController : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpforce);
         }
+
+        if (Input.GetButtonDown("Fire1"))
+        {
+            StartCoroutine(AttackOrder());
+        }
         AnimationState();
     }
 
     private  void AnimationState()
     {
-        MovementState state;
         if (dirX > 0f)
         {
-            state = MovementState.running;
+            animationController.PlayRunningAnim();
             sprite.flipX = false;
         }
         else if (dirX < 0f)
         {
-            state = MovementState.running;
+            animationController.PlayRunningAnim();
             sprite.flipX = true;
         }
         else
         {
-            state = MovementState.idle;
+            animationController.PlayIdleAnim();
         }
 
         if (rb.velocity.y > .1f)
         {
-            state = MovementState.jumping;
+            animationController.PlayJumpingAnim();
         }
         else if(rb.velocity.y < -.1f)
         {
-            state = MovementState.falling;
+            animationController.PlayFallingAnim();
         }
-        anim.SetInteger("state", (int)state);
     }
 
     private bool isGrounded()
     {
         return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
-    
+
+    private IEnumerator AttackOrder()
+    {
+        if(combat.isAttacking)
+            yield break;
+
+        combat.isAttacking = true;
+        animationController.TiggerAttackAnim();
+
+        yield return new WaitForSeconds(0.1f);
+        
+        combat.Attack();
+
+        combat.isAttacking = false;
+    }
 }

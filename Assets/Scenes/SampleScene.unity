@@ -1402,6 +1402,7 @@ GameObject:
   - component: {fileID: 1511095513}
   - component: {fileID: 1511095514}
   - component: {fileID: 1511095515}
+  - component: {fileID: 1511095516}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1573,7 +1574,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d199a03f0be0f0648a394c72055c61d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anim: {fileID: 1511095511}
   damage: 2
   attackRangeX: 3
   attackRangeY: 0.5
@@ -1581,4 +1581,16 @@ MonoBehaviour:
   whatIsEnemy:
     serializedVersion: 2
     m_Bits: 64
-  attackRate: 2
+  isAttacking: 0
+--- !u!114 &1511095516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511095508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d406d01c0e90c847b7fa0a7857c6e32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
