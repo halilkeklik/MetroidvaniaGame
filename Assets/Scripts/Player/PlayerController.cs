@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Animator anim;
@@ -12,13 +13,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpforce;
     [SerializeField] private LayerMask jumpableGround;
     private float dirX;
-
+    
     private enum MovementState
     {
         idle,
         running,
         jumping,
-        falling
+        falling,
     };
     // Start is called before the first frame update
     void Start()
@@ -68,7 +69,6 @@ public class PlayerMovement : MonoBehaviour
         {
             state = MovementState.falling;
         }
-
         anim.SetInteger("state", (int)state);
     }
 
@@ -76,4 +76,5 @@ public class PlayerMovement : MonoBehaviour
     {
         return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
     }
+    
 }
